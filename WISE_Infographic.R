@@ -14,6 +14,10 @@
 ##                                              ##
 ##################################################
 
+# Copyright (c) 2024 Scott M. Miller 
+# This code is licensed under the MIT License.
+# For full license text, see the LICENSE file in the repository root.
+
 
 # ----------------------------------
 # Install relevant packages

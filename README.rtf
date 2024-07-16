@@ -1,0 +1,65 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 # WISE Scales PDF Infographic Generator\
+\
+## Overview\
+This R script generates a PDF infographic for Water Insecurity Experiences (WISE) Scales data. It processes survey data, calculates water insecurity metrics, and creates visualizations to present the results in an easy-to-understand format.\
+\
+## Author\
+Scott Miller (scott.miller@charitywater.org)\
+\
+## Last Updated\
+July 16, 2024\
+\
+## Features\
+- Processes WISE Scales survey data\
+- Calculates water insecurity scores and classifications\
+- Generates visualizations including:\
+  - Item prevalence bar chart\
+  - Water insecurity by household size\
+  - Water insecurity by district\
+- Creates a comprehensive PDF infographic\
+\
+## Requirements\
+- R (version 4.0.0 or higher recommended)\
+- Required R packages:\
+  - readxl\
+  - dplyr\
+  - data.table\
+  - ggplot2\
+  - grid\
+\
+## Usage\
+1. Ensure all required packages are installed.\
+2. Set the working directory to match the folder where your WISE data is stored.\
+3. Update the input file name in the script to match your data file.\
+4. Modify the background details section to match your specific survey information.\
+5. Run the script to generate the "Infographic.pdf" file.\
+\
+## Input Data\
+The script expects an Excel file with WISE survey data. Ensure your data file includes the following variables:\
+- WISE_Worry, WISE_Angry, WISE_Interrupt, WISE_Clothes, WISE_Plans, WISE_Food, WISE_Hands, WISE_Body, WISE_Drink, WISE_Sleep, WISE_None, WISE_Shame\
+- Household Size\
+- District\
+\
+## Customization\
+You can customize various aspects of the infographic by modifying the following in the script:\
+- Text details (scale, country, survey description, etc.)\
+- Color scheme\
+- Graph layouts and styles\
+\
+## License\
+Copyright (c) 2024 Scott M. Miller \
+This code is licensed under the MIT License.\
+For full license text, see the LICENSE file in the repository root.\
+\
+## Acknowledgments\
+This tool was developed by Scott M. Miller to support the measurement and visualization of water insecurity experiences worldwide.\
+\
+## Contact\
+For questions or support, please contact Scott Miller at scott.miller@charitywater.org}

@@ -10,7 +10,7 @@
 ##            Author: Scott Miller              ##
 ##        scott.miller@charitywater.org         ##
 ##                                              ##
-##           Last Updated: 6/6/2024             ##
+##           Last Updated: 7/16/2024            ##
 ##                                              ##
 ##################################################
 
@@ -19,9 +19,7 @@
 # Install relevant packages
 # ----------------------------------
 
-# Install the "readxl" package to import Excel files
-
-# install.packages(c("readxl", "dplyr", "))        #Note: Remove the '#' at the start of this line to install packages
+# install.packages(c("readxl", "dplyr", "data.table", "ggplot2", "grid"))        #Note: Remove the '#' at the start of this line to install packages
 library(readxl)
 library(dplyr)
 library(data.table)
@@ -34,22 +32,27 @@ library(grid)
 # ----------------------------------
 
 # Set directory: this needs to match the folder where WISE data is stored
-setwd("/Users/scott.miller/Desktop/WISE Infographics")
+setwd("/Users/scott.miller/Desktop/WISE Scales/WISE Infographics/")
 
 # Import Data: this needs to match the data set stored in the directory folder
 data <- read_excel("HSI Mozambique HWISE Baseline Data.xlsx")
 
 
 # ----------------------------------
-# Define Background Details
+# Define Background Details for Automatic Text Generation
 # ----------------------------------
 
+text_scale <- "Household (HWISE)"   # Enter the WISE scale (e.g. HWISE, iWISE, etc.)
+text_country <- "Mozambique"    # Enter country name
+text_survey <- "Baseline Survey"    # Enter brief survey description
+text_collectedby <- "Helvetas Mozambique"   # Enter name of organization that collected this data
+text_timing <- "November 2023"  # Enter the timing of data collection 
+text_geography <- "Project implementation areas within Memba, Larde, Erati, and Moma Districts"     # Describe the geographic coverage of the surveys
 
 
 # ----------------------------------
 # Data Cleaning & Naming
 # ----------------------------------
-
 
 # create an object with all WISE scale variable names
 names <- c("WISE_Worry", "WISE_Angry", "WISE_Interrupt", "WISE_Clothes", "WISE_Plans",
@@ -69,8 +72,9 @@ for (name in names) {
         ))
 }
 
+
 # calculate each observation's overall WISE score
-data$WISE_Score <- rowSums(data[, grep("_n$", names(data))], na.rm = TRUE)    
+data$WISE_Score <- rowSums(data[, grep("_n$", names(data))], na.rm = F)
 
 # create 'Insecurity' variables for binary (>=12) and level cutoffs
 data <- data %>%
@@ -97,17 +101,23 @@ data <- data %>%
 ## HWISE Classification
 #-----------------------
 
+# create a table with the % of HHs classified as water insecure (HWISE Score < 12)
 prop.table(table(as.character(data$Insecurity_binary))) * 100
+
+# save the percentage of insecure responses
+pct_insecure <- paste(round(prop.table(table(as.character(data$Insecurity_binary)))[2]*100, 1), "%", sep = "")
+
+# create a table with the % of HHs in each HWISE grouping (Low-to-no, mild, moderate, severe water insecurity)
 prop.table(table(as.character(data$Insecurity_level))) * 100
 
 
 # Calculate percentage of observations >= 1 for each variable
-percentages <- sapply(data[,names], function(x) mean(x >= 1) * 100)
+percentages <- colMeans(data[, grep("_n$", names(data))] > 0, na.rm = TRUE) * 100
 
 # Convert to data.table in long format
 long_data <- data.table(variable = names(percentages), percentage = percentages) 
 
-# Create bar graph
+# Create and store bar graph
 Item_Prevalence <- ggplot(long_data, aes(x = variable, y = percentage)) +
     geom_bar(stat = "identity", fill = "#2074bc") +  # Set all bars to the same custom color
     theme_minimal() +
@@ -119,18 +129,18 @@ Item_Prevalence <- ggplot(long_data, aes(x = variable, y = percentage)) +
     ) +
     geom_text(aes(label = paste(round(percentage, 1), "%", sep = "")),  # Add this line to annotate bars with their percentage values
               position = position_dodge(width = 0.9), hjust = 1.3, color = "white") +
-    scale_x_discrete(labels = c("WISE_Worry" = "Worry about water", 
-                                "WISE_Angry" = "Felt angry about water",
-                                "WISE_Interrupt" = "Had supply interuptions",
-                                "WISE_Clothes" = "Could not wash clothes",
-                                "WISE_Plans" = "Had to change plans",
-                                "WISE_Food" = "Had to eat differently",
-                                "WISE_Hands" = "Could not wash hands",
-                                "WISE_Body" = "Could not wash body",
-                                "WISE_Drink" = "Had no water to drink",
-                                "WISE_Sleep" = "Went to bed thirsty",
-                                "WISE_None" = "Had no water at all",
-                                "WISE_Shame" = "Felt shame about water"
+    scale_x_discrete(labels = c("WISE_Worry_n" = "Worry about water", 
+                                "WISE_Angry_n" = "Felt angry about water",
+                                "WISE_Interrupt_n" = "Had supply interuptions",
+                                "WISE_Clothes_n" = "Could not wash clothes",
+                                "WISE_Plans_n" = "Had to change plans",
+                                "WISE_Food_n" = "Had to eat differently",
+                                "WISE_Hands_n" = "Could not wash hands",
+                                "WISE_Body_n" = "Could not wash body",
+                                "WISE_Drink_n" = "Had no water to drink",
+                                "WISE_Sleep_n" = "Went to bed thirsty",
+                                "WISE_None_n" = "Had no water at all",
+                                "WISE_Shame_n" = "Felt shame about water"
     ))
 
 
@@ -149,7 +159,7 @@ hhsize_data <- data %>%
     group_by(HHsize_group) %>%
     summarize(pct_insecure = mean(Insecurity_binary == "Water Insecure", na.rm = TRUE) * 100)
 
-# Create the ggplot bar graph
+# Create and store bar graph
 Insecurity_by_HHsize <- ggplot(hhsize_data, aes(x = HHsize_group, y = pct_insecure)) +
     geom_bar(stat = "identity", fill = "#2074bc") +
     labs(x = "Household Size", y = "Insecurity") +
@@ -158,11 +168,9 @@ Insecurity_by_HHsize <- ggplot(hhsize_data, aes(x = HHsize_group, y = pct_insecu
     theme_minimal()
 
 
-
 #-----------------------
 ## District Decomposition
 #-----------------------
-
 
 # Calculate the mean of Y for each X_group
 district_data <- data %>%
@@ -176,6 +184,7 @@ Insecurity_by_District <- ggplot(district_data, aes(x = District, y = pct_insecu
     geom_text(aes(label = paste(round(pct_insecure, 1), "%", sep = "")),  # Add this line to annotate bars with their percentage values
               position = position_dodge(width = 0.9), vjust = 1.3, color = "white") +
     theme_minimal()
+
 
 
 
@@ -211,7 +220,7 @@ grid.text("Water Insecurity Experiences (WISE) Scales",
           vjust = 3, hjust = .5, 
           gp = gpar(col = "#2074bc", cex = 2.4, alpha = 1))
 
-grid.text("Mozambique Baseline Survey", 
+grid.text(paste(text_country, text_survey, sep = " "), 
           y = unit(0.88, "npc"), 
           gp = gpar(col = "#2074bc", cex = 2.2))
 
@@ -246,10 +255,10 @@ grid.text(paste(
 
 grid.text(paste(
     "",
-    "Household (HWISE)",
-    "Helvetas Mozambique",
-    "November 2023",
-    "Project implementation areas within Memba, Larde, Erati, and Moma Districts",
+    text_scale,
+    text_collectedby,
+    text_timing,
+    text_geography,
     "",
     "",sep = "\n"), vjust = 0, hjust = 0, 
     x = unit(0.27, "npc"), 
@@ -258,7 +267,7 @@ grid.text(paste(
 
 
 #-----------------------
-# Top left paragraph
+# Top left paragraph (needs to be manually updated)
 #-----------------------
 
 grid.text(paste(
@@ -288,7 +297,7 @@ grid.text(paste(
 #-----------------------
 
 grid.text(paste(
-    "Who is water insecure in Mozambique?",
+    paste("Who is water insecure in ",text_country, "?", sep = ""),
     "", sep = "\n"), vjust = 0, hjust = 0, 
     x = unit(0.05, "npc"), 
     y = unit(0.53, "npc"), 
@@ -296,7 +305,7 @@ grid.text(paste(
 
 
 grid.text(paste(
-    "81.7%",
+    pct_insecure,
     "", sep = "\n"), vjust = 0, hjust = 0, 
     x = unit(0.05, "npc"), 
     y = unit(0.485, "npc"), 

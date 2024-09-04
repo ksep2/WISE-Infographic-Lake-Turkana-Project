@@ -36,10 +36,10 @@ library(grid)
 # ----------------------------------
 
 # Set directory: this needs to match the folder where WISE data is stored
-setwd("/Users/katie/Documents/IWISE_Lake_Turkana.xlsx/")
+setwd("/Users/katie/Documents/")
 
 # Import Data: this needs to match the data set stored in the directory folder
-data <- read_excel("HSI Mozambique HWISE Baseline Data.xlsx")
+data <- read_excel("IWISE_Lake_Turkana.xlsx")
 
 
 # ----------------------------------

@@ -23,7 +23,7 @@
 # Install relevant packages
 # ----------------------------------
 
-# install.packages(c("readxl", "dplyr", "data.table", "ggplot2", "grid"))        #Note: Remove the '#' at the start of this line to install packages
+install.packages(c("readxl", "dplyr", "data.table", "ggplot2", "grid"))        #Note: Remove the '#' at the start of this line to install packages
 library(readxl)
 library(dplyr)
 library(data.table)
@@ -36,7 +36,7 @@ library(grid)
 # ----------------------------------
 
 # Set directory: this needs to match the folder where WISE data is stored
-setwd("/Users/scott.miller/Desktop/WISE Scales/WISE Infographics/")
+setwd("/Users/katie/Documents/IWISE_Lake_Turkana.xlsx/")
 
 # Import Data: this needs to match the data set stored in the directory folder
 data <- read_excel("HSI Mozambique HWISE Baseline Data.xlsx")
@@ -46,12 +46,12 @@ data <- read_excel("HSI Mozambique HWISE Baseline Data.xlsx")
 # Define Background Details for Automatic Text Generation
 # ----------------------------------
 
-text_scale <- "Household (HWISE)"   # Enter the WISE scale (e.g. HWISE, iWISE, etc.)
-text_country <- "Mozambique"    # Enter country name
+text_scale <- "Individual (IWISE)"   # Enter the WISE scale (e.g. HWISE, iWISE, etc.)
+text_country <- "Kenya"    # Enter country name
 text_survey <- "Baseline Survey"    # Enter brief survey description
-text_collectedby <- "Helvetas Mozambique"   # Enter name of organization that collected this data
-text_timing <- "November 2023"  # Enter the timing of data collection 
-text_geography <- "Project implementation areas within Memba, Larde, Erati, and Moma Districts"     # Describe the geographic coverage of the surveys
+text_collectedby <- "Strathmore University"   # Enter name of organization that collected this data
+text_timing <- "August 2024"  # Enter the timing of data collection 
+text_geography <- "Project implementation areas within Turkana County"     # Describe the geographic coverage of the surveys
 
 
 # ----------------------------------
